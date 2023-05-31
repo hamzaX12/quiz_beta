@@ -11,8 +11,7 @@ class LessonController extends Controller
 {
     $lessons = Lesson::orderBy('position')->get()->groupBy('section_id');
     $sections = Section::orderBy('position')->get();
-    
-    return view('index', ['lessons' => $lessons, 'sections' => $sections]);
+    return view('index', ['lessons' => $lessons, 'sections' => $sections],compact('lessons','sections'));
 }
 
 
@@ -32,12 +31,16 @@ class LessonController extends Controller
         // Return a success response
         return response()->json(['lessonId' => $lesson->id]);
     }
+
+    
     public function update(Request $request, Lesson $lesson)
     {
         $lesson->name = $request->input('name');                              
         $lesson->save();
         return response()->json(['message' => 'Lesson updated successfully']);
     }
+
+
     public function updatePosition(Request $request)
     {
         $lessonPositions = $request->all();

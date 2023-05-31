@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\QuestionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,5 +31,9 @@ Route::put('/lessons/{lesson}',[LessonController::class,'update']);
 
 Route::delete('/lessons/destroy/{id}',[LessonController::class,'destroy']);
 
-
+// Route::delete('/lessons/destroy/{id}',[LessonController::class,'destroy']);
+Route::put('/answers/{id}',[AnswerController::class,'update']);
+Route::put('/questions/{id}',[QuestionController::class,'update']);
+Route::delete('/question/destroy/{id}',[ QuestionController::class,'destroy']);
+Route::put('/answer/destroy/{id}',[AnswerController::class,'destroy']);
 

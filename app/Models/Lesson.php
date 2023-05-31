@@ -9,6 +9,9 @@ class Lesson extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+    ];
 
     public function section(){
         return $this->belongsTo(Section::class);

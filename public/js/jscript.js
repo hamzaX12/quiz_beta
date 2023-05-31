@@ -26,7 +26,7 @@ new Sortable(nestedSortables, {
             },
         });
         $.ajax({
-            url: "/updateSectionPosition", // Update with the appropriate URL
+            url: "/updateQuestionPosition", // Update with the appropriate URL
             type: "PUT",
             dataType: "json",
             data: JSON.stringify(sectionPositions),
@@ -45,11 +45,9 @@ document.getElementById("btn").addEventListener("click", function () {
     // create the ul element
     var newUls = document.createElement("ul");
     newUls.className = "section-list";
-
     // create the li element
     var newLi = document.createElement("li");
     newLi.className = "section";
-
     // create the icon handler:
     var newIcon = document.createElement("i");
     newIcon.className = "fa fa-bars handle-section";
@@ -58,33 +56,29 @@ document.getElementById("btn").addEventListener("click", function () {
     newDiv.id = "section-box";
     newDiv.style = "display: inline;";
     newDiv.innerHTML =
-        "<input value='New Section' class='input-section' type='text' ><button class='button save-button_sec'>Save</button><a  class='button cancel-button_sec'>Cancel</a>";
-
+        "<input value='New question' class='input-section' type='text' ><button class='button save-button_sec'>Save</button><a  class='button cancel-button_sec'>Cancel</a>";
     // create the button to add a lesson:
     var newBtn = document.createElement("button");
     newBtn.id = "btn-el";
     newBtn.className = "btn";
-    newBtn.innerHTML = "+ Add Lesson";
-
+    newBtn.innerHTML = "+ Add answer";
     // create the ul that will take the lessons
     var newUl = document.createElement("ul");
     newUl.className = "lesson-list";
-
     // add all the elements to the ul element with id section-list.
     var section_item = document.getElementById("main");
-
     // var lastSection = document.getElementById("body");
     section_item.appendChild(newUls);
     newUls.appendChild(newLi);
     newLi.append(newIcon, newDiv, newUl);
     newUl.appendChild(newBtn);
-
     new Sortable(section_item, {
         group: "shared",
         handle: ".handle-section",
         animation: 200,
         nested: true,
     });
+
     var newInputSection = newDiv.querySelector(".input-section");
     newInputSection.focus();
     newInputSection.select();
@@ -112,7 +106,7 @@ document.getElementById("btn").addEventListener("click", function () {
     var sectionId;
     // Send the section data to the server
     $.ajax({
-        url: "/saveSection", // Update with the appropriate URL
+        url: "/saveQuestion", // Update with the appropriate URL
         type: "POST",
         dataType: "json",
         data: JSON.stringify(sectionData),
@@ -130,7 +124,7 @@ document.getElementById("btn").addEventListener("click", function () {
                 newDiv1.id = "lesson-box";
                 newDiv1.style = "display: inline;";
                 newDiv1.innerHTML =
-                    "<input value='New Lesson' class='input' type='text' name='' ><button class='button save-button'>Save</button><a href='' class='button cancel-button'>Cancel</a>";
+                    "<input value='New answer' class='input' type='text' name=''><input type='checkbox' id='correct' name='correct'> <button class='button save-button'>Save</button> <a href='' class='button cancel-button'>Cancel</a>";
                 // add all the elements to the ul element with id section-list.
                 var currentLi = newUl.parentElement;
                 var lessonList =
@@ -146,6 +140,8 @@ document.getElementById("btn").addEventListener("click", function () {
                 console.log(lessonName);
                 console.log(sectionId);
                 // Create an object with the lesson data
+                // Get the value of the radio button
+                // var isCorrect = document.getElementById("correct").checked;
 
                 $.ajaxSetup({
                     headers: {
@@ -159,12 +155,13 @@ document.getElementById("btn").addEventListener("click", function () {
                 var lessonData = {
                     lessonName: lessonName,
                     sectionId: sectionId,
+                    // correct: isCorrect,
                     position: lessonPosition, // Assign the position
-                };
+                };                   
                 var lessonId;
                 // Send the lesson data to the server
                 $.ajax({
-                    url: "/saveLesson", // Update with the appropriate URL
+                    url: "/saveAnswer", // Update with the appropriate URL
                     type: "POST",
                     dataType: "json",
                     data: JSON.stringify(lessonData),
@@ -174,56 +171,6 @@ document.getElementById("btn").addEventListener("click", function () {
                         lessonId = response.lessonId;
                         console.log("Lesson saved", lessonId);
                         newLi1.setAttribute("data-lesson-id", lessonId);
-                        // var buttons =
-                        // document.querySelectorAll(".cancel-button");
-                        // buttons.forEach(function (button) {
-                        //     button.addEventListener("click", function () {
-                        //         $.ajaxSetup({
-                        //             headers: {
-                        //                 "X-CSRF-TOKEN": $(
-                        //                     'meta[name="csrf-token"]'
-                        //                 ).attr("content"),
-                        //             },
-                        //         });
-                        //         // console.log(sectionID);
-                        //         // var lessonId=lessonId;
-                        //         // var sectionID =
-                        //         // Send the lesson data to the server
-                        //         console.log("this lesson id", lessonId);
-                        //         $.ajax({
-                        //             url: "/api/lessons/destroy/" + lessonId, // Update with the appropriate URL
-                        //             type: "DELETE",
-                        //             dataType: "json",
-                        //             headers: {
-                        //                 "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                        //             },
-                        //             data: {
-                        //                 lessonId: lessonId,
-                        //             },
-                        //             contentType: "application/json",
-                        //             success: function (response) {
-                        //                 // // Handle the response from the server
-                        //                 // sectionId = response.sectionId;
-                        //                 // var li = button.closest(".lesson");
-                        //                 // li.remove();
-                        //                 // newLi1.setAttribute("data-lesson-id", sectionId);
-                        //                 console.log(
-                        //                     "deleted successfully",
-                        //                     response
-                        //                 );
-                        //             },
-                        //             error: function (xhr, status, error) {
-                        //                 // Handle any errors
-                        //                 console.log("xhr", xhr);
-                        //                 console.log("status", status);
-                        //                 console.error(
-                        //                     "Error saving lesson:",
-                        //                     error
-                        //                 );
-                        //             },
-                        //         });
-                        //     });
-                        // });
                     },
                     error: function (xhr, status, error) {
                         // Handle any errors
@@ -251,7 +198,7 @@ document.getElementById("btn").addEventListener("click", function () {
                         var lessonID = li.dataset.lessonId;
                         console.log("this lesson id", lessonID);
                         $.ajax({
-                            url: "/api/lessons/destroy/" + lessonID, // Update with the appropriate URL
+                            url: "/api/answer/destroy/" + lessonID, // Update with the appropriate URL
                             type: "DELETE",
                             dataType: "json",
                             // headers: {
@@ -268,9 +215,9 @@ document.getElementById("btn").addEventListener("click", function () {
                                 li.remove();
                                 // newLi1.setAttribute("data-lesson-id", sectionId);
                                 console.log("deleted successfully", response);
-                                while (true) {
-                                    console.log("egeg",lessonID);
-                                }
+                                // while (true) {
+                                //     console.log("egeg",lessonID);
+                                // }
                             },
                             error: function (xhr, status, error) {
                                 // Handle any errors
@@ -281,7 +228,6 @@ document.getElementById("btn").addEventListener("click", function () {
                         });
                     });
                 });
-
                 var buttons = document.querySelectorAll(".save-button");
                 buttons.forEach(function (button) {
                     button.addEventListener("click", function () {
@@ -291,7 +237,7 @@ document.getElementById("btn").addEventListener("click", function () {
                         // Create an object to send the data
                         var link = document.createElement("span");
                         link.textContent = name;
-                        link.className = "lesson-link";
+                        link.className = "lesson-span";
                         var publish_btn = document.createElement("a");
                         publish_btn.href = "#";
                         publish_btn.textContent = "action";
@@ -300,7 +246,7 @@ document.getElementById("btn").addEventListener("click", function () {
                         // console.log(lessonId);
                         // console.log(name);
                         $.ajax({
-                            url: "/api/lessons/" + lessonId,
+                            url: "/api/answer/" + lessonId,
                             type: "PUT",
                             headers: {
                                 "X-CSRF-TOKEN": "{{ csrf_token() }}", // Add this line if you're using Laravel's CSRF protection
@@ -320,59 +266,6 @@ document.getElementById("btn").addEventListener("click", function () {
                     });
                 });
                 /**************************************** cancel lessen */
-
-                // var buttons = document.querySelectorAll(".cancel-button");
-                // buttons.forEach(function (button) {
-                //     button.addEventListener("click", function () {
-                //         $.ajaxSetup({
-                //             headers: {
-                //                 "X-CSRF-TOKEN": $(
-                //                     'meta[name="csrf-token"]'
-                //                 ).attr("content"),
-                //             },
-                //         });
-
-                //         // Send the lesson data to the server
-
-                //         // var li = button.parentNode.parentNode; // Traverse two levels up to reach the parent <li> element
-                //         // var lessonID = li.getAttribute("data-lesson-id");
-                //         var lessonID =
-                //             button.parentNode.parentNode.getAttribute(
-                //                 "data-lesson-id"
-                //             );
-                //         // var lessonID = li.dataset.lessonId;
-                //         console.log("this lesson id", lessonID);
-                //         $.ajax({
-                //             url: "/api/lessons/destroy/" + lessonID, // Update with the appropriate URL
-                //             type: "DELETE",
-                //             dataType: "json",
-                //             // headers: {
-                //             //     "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                //             // },
-                //             data: {
-                //                 lessonId: lessonID,
-                //             },
-                //             contentType: "application/json",
-                //             success: function (response) {
-                //                 // Handle the response from the server
-                //                 // sectionId = response.sectionId;
-                //                 // var li = button.closest(".lesson");
-                //                 li.remove();
-                //                 // newLi1.setAttribute("data-lesson-id", sectionId);
-                //                 console.log("deleted successfully", response);
-                //                 // while (true) {
-                //                 //     console.log("egeg",lessonID);
-                //                 // }
-                //             },
-                //             error: function (xhr, status, error) {
-                //                 // Handle any errors
-                //                 console.log("xhr", xhr);
-                //                 console.log("status", status);
-                //                 console.error("Error saving lesson:", error);
-                //             },
-                //         });
-                //     });
-                // });
             });
         },
 
@@ -401,7 +294,7 @@ document.getElementById("btn").addEventListener("click", function () {
             row.replaceWith(span, quick_action_button);
 
             $.ajax({
-                url: "/api/sections/" + sectionId,
+                url: "/api/questions/" + sectionId,
                 type: "PUT",
                 headers: {
                     "X-CSRF-TOKEN": "{{ csrf_token() }}", // Add this line if you're using Laravel's CSRF protection
@@ -438,7 +331,7 @@ document.getElementById("btn").addEventListener("click", function () {
             console.log("this section id", sectionId);
 
             $.ajax({
-                url: "/api/sections/destroy/" + sectionId, // Update with the appropriate URL
+                url: "/api/question/destroy/" + sectionId, // Update with the appropriate URL
                 type: "DELETE",
                 dataType: "json",
 
@@ -484,7 +377,7 @@ addBtns.forEach(function (addBtn) {
         newDiv1.id = "lesson-box";
         newDiv1.style = "display: inline;";
         newDiv1.innerHTML =
-            "<input value='New Lesson' class='input' type='text' name='' ><button class='button save-button'>Save</button><a href='' class='button cancel-button'>Cancel</a>";
+            "<input value='New answer' class='input' type='text' name=''><input type='checkbox' id='correct' name='correct'> <button class='button save-button'>Save</button> <a href='' class='button cancel-button'>Cancel</a>";
         ul.appendChild(newLi1);
         newLi1.appendChild(newDiv1);
         var newInput = newDiv1.querySelector(".input");
@@ -497,12 +390,17 @@ addBtns.forEach(function (addBtn) {
         console.log("section id : ", sectionID);
         var lessonPosition = ul.querySelectorAll(".lesson").length;
         console.log("position : ", lessonPosition);
+        var isCorrect = document.getElementById("correct").checked;
+        console.log("lessonName:", lessonName);
+        console.log("isCorrect", isCorrect);
 
         var lessonData = {
             lessonName: lessonName,
             sectionId: sectionID,
             position: lessonPosition,
+            // correct: isCorrect,
         };
+
         $.ajaxSetup({
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
@@ -512,7 +410,7 @@ addBtns.forEach(function (addBtn) {
         var lessonId;
         // Send the lesson data to the server
         $.ajax({
-            url: "/saveLesson", // Update with the appropriate URL
+            url: "/saveAnswer", // Update with the appropriate URL
             type: "POST",
             dataType: "json",
             data: JSON.stringify(lessonData),
@@ -530,7 +428,6 @@ addBtns.forEach(function (addBtn) {
                 console.error("Error saving lesson:", error);
             },
         });
-
         var buttons = document.querySelectorAll(".save-button");
         buttons.forEach(function (button) {
             button.addEventListener("click", function () {
@@ -538,7 +435,6 @@ addBtns.forEach(function (addBtn) {
                 var nameInput = row.querySelector(".input");
                 var name = nameInput.value;
                 // Create an object to send the data
-
                 var link = document.createElement("span");
                 link.textContent = name;
                 link.className = "lesson-link";
@@ -547,10 +443,10 @@ addBtns.forEach(function (addBtn) {
                 publish_btn.textContent = "Publish";
                 publish_btn.className = "publish-btn";
                 row.replaceWith(link, publish_btn);
-
+                console.log('answer id:',lessonId);
                 ////////////://///////////////////////////////////////
                 $.ajax({
-                    url: "/api/lessons/" + lessonId,
+                    url: "/api/answers/" + lessonId,
                     type: "PUT",
                     headers: {
                         "X-CSRF-TOKEN": "{{ csrf_token() }}", // Add this line if you're using Laravel's CSRF protection

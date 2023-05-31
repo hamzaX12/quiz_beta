@@ -46,7 +46,4 @@ public function destroy($id)
     // Return a JSON response indicating success
     return response()->json(['sectionId' => 'hi']);
 }
-
-
-
 }
